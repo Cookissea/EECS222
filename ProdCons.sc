@@ -32,40 +32,37 @@ channel C
 };
 
 behavior Prod(S s){
-	const char *str = "Beans and Potatoes";
-	int cnt = 0;
-
 	void main(){
-		if(cnt == 0){
-			printf("Producer starts.\n");cnt++;
+		int i;
+		const char *str = "Beans and Potatoes";
+		i = 0;
+
+		printf("Producer starts.\n");
+		while(str[i] != '\0')
+		{
+			printf("Producer sends '%c'.\n",str[i]);
+			s.send(str[i]);
+			i++;
 		}
-		if(*str != '\0'){
-			s.send(*str);
-			printf("Producer sends %c.\n",*str++);			
-		}
-		else
-			exit(EXIT_FAILURE);	
+		printf("Producer done.\n"); 
 	}
 };
 
 behavior Cons(R r){
 	void main(){
 		const char *str;
-		int cnt;
-		int l;
+		int l,i;
+		char c;
 		str = "Beans and Potatoes";
 		l = strlen(str);
-		cnt = 0;
 
-		if(cnt == 0)
-			printf("Consumer starts.\n");
-		//char x = s.receive();
-		if(cnt != l){
-			printf("Consumer sends %c.\n",r.receive());
-			cnt++;
+		printf("Consumer starts.\n");
+		for(i = 0; i < l;++i)
+		{
+			c = r.receive();
+			printf("Consumer received '%c'.\n",c);
 		}
-		else
-			exit(EXIT_FAILURE);	
+		printf("Consumer done.\n"); 
 	}
 };
 
@@ -79,20 +76,15 @@ behavior Main{
 		/* code */	
 		const char *str;
      	int l;
-		int i;
 		str = "Beans and Potatoes";
 		l = strlen(str);
 
 		printf("Main starts.\n");
 		//printf("Producer starts.\n");
 		//printf("Consumer starts.\n"); 
-		for(i = 0;i < l;i++){
-			par{
+		par{
 				p;co;
-			}
 		}
-		printf("Consumer done.\n"); 
-		printf("Producer done.\n"); 
 		printf("Main done.\n");
 		return 0;
 	}
